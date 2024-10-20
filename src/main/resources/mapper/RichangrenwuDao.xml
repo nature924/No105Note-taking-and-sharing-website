@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.RichangrenwuDao">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id as id
+        ,a.richangrenwu_uuid_number as richangrenwuUuidNumber
+        ,a.richangrenwu_name as richangrenwuName
+        ,a.richangrenwu_types as richangrenwuTypes
+        ,a.richangrenwu_jifen as richangrenwuJifen
+        ,a.richangrenwu_content as richangrenwuContent
+        ,a.richangrenwu_wancheng_content as richangrenwuWanchengContent
+        ,a.create_time as createTime
+    </sql>
+    <select id="selectListView" parameterType="map" resultType="com.entity.view.RichangrenwuView" >
+        SELECT
+        <include refid="Base_Column_List" />
+        <!-- 级联表的字段 -->
+
+        FROM richangrenwu  a
+
+        <where>
+            <if test="params.ids != null">
+                and a.id in
+                <foreach item="item" index="index" collection="params.ids" open="(" separator="," close=")">
+                #{item}
+                </foreach>
+            </if>
+            <if test=" params.richangrenwuUuidNumber != '' and params.richangrenwuUuidNumber != null and params.richangrenwuUuidNumber != 'null' ">
+                and a.richangrenwu_uuid_number like CONCAT('%',#{params.richangrenwuUuidNumber},'%')
+            </if>
+            <if test=" params.richangrenwuName != '' and params.richangrenwuName != null and params.richangrenwuName != 'null' ">
+                and a.richangrenwu_name like CONCAT('%',#{params.richangrenwuName},'%')
+            </if>
+            <if test="params.richangrenwuTypes != null and params.richangrenwuTypes != ''">
+                and a.richangrenwu_types = #{params.richangrenwuTypes}
+            </if>
+            <if test="params.richangrenwuJifenStart != null ">
+                <![CDATA[  and a.richangrenwu_jifen >= #{params.richangrenwuJifenStart}   ]]>
+            </if>
+            <if test="params.richangrenwuJifenEnd != null ">
+                <![CDATA[  and a.richangrenwu_jifen <= #{params.richangrenwuJifenEnd}   ]]>
+            </if>
+            <if test="params.richangrenwuJifen != null and params.richangrenwuJifen != ''">
+                and a.richangrenwu_jifen = #{params.richangrenwuJifen}
+            </if>
+            <if test=" params.richangrenwuContent != '' and params.richangrenwuContent != null and params.richangrenwuContent != 'null' ">
+                and a.richangrenwu_content like CONCAT('%',#{params.richangrenwuContent},'%')
+            </if>
+            <if test=" params.richangrenwuWanchengContent != '' and params.richangrenwuWanchengContent != null and params.richangrenwuWanchengContent != 'null' ">
+                and a.richangrenwu_wancheng_content like CONCAT('%',#{params.richangrenwuWanchengContent},'%')
+            </if>
+
+        </where>
+        order by a.${params.sort} ${params.order}
+    </select>
+
+</mapper>
